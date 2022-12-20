@@ -6,20 +6,45 @@
 #Total number of Halos = 4231400
 # Try this: https://www.tng-project.org/data/forum/topic/31/plotting-number-of-halos-per-mass-bin/
 
-
 import illustris_python as il
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def running_histogram(X, nBins=100, binSize=None, normFac=None):
+    """ Create a adaptive histogram of a (x) point set using some number of bins. """
+    if binSize is not None:
+        nBins = round( (X.max()-X.min()) / binSize )
+
+    bins = np.linspace(X.min(),X.max(), nBins)
+    delta = bins[1]-bins[0]
+
+    running_h = []
+    bin_centers = []
+
+    for i, bin in enumerate(bins):
+        binMax = bin + delta
+        w = np.where((X >= bin) & (X < binMax))
+
+        if len(w[0]):
+            running_h.append( len(w[0]) )
+            bin_centers.append( np.nanmedian(X[w]) )
+
+    if normFac is not None:
+        running_h /= normFac
+
+    return bin_centers, running_h
 
 def test_0():
-    HaloMasses = il.groupcat.loadHalos(basePath, 99, fields=['GroupMass'])
-    print(HaloMasses)
+    fields = ['GroupFirstSub']
+    snap = 99
+    group_first_sub = il.groupcat.loadHalos(basePath, snap, fields=fields)
+    print("group_first_sub.shape = ", group_first_sub.shape)
+    print("group_first_sub = ", group_first_sub[1])
+    return
 
+def test_1():
+    HaloMasses = il.groupcat.loadHalos(basePath, 99, fields=['GroupMass'])
     df2 = pd.DataFrame(HaloMasses)
     df2.columns = ['HaloMass']
     df2.assign(LogMass=lambda x: np.log(df2['HaloMass']))
@@ -31,21 +56,30 @@ def test_0():
     plt.show()
     print(df2.describe())
 
-def test_1():
-    fields = ['GroupFirstSub']
-    snap = 99
-    group_first_sub = il.groupcat.loadHalos(basePath, snap, fields=fields)
-    print("group_first_sub.shape = ", group_first_sub.shape)
-    print("group_first_sub = ", group_first_sub[1])
+
+def test_2():
+    HaloMasses = il.groupcat.loadHalos(basePath, 99, fields=['Group_M_Crit200'])
+    df2 = pd.DataFrame(HaloMasses)
+    df2.columns = ['HaloM_Crit200']
+    plt.hist(df2['HaloM_Crit200'], bins=100)
+    plt.ylabel('Log Number of FoF Halos')
+    plt.xlabel('Log10 (Halo Mass_Crit200)')
+    plt.title('Halo [Group_Mass_Crit200] Distribution')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.show()
+    print(df2.describe())
+
     return
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
 
     basePath = 'D:/IllustrisData/TNG100-1-Dark/output'
 
-    test_0()
+    #test_0()
     #test_1()
+    test_2()
+
 
 """
 def test_groupcat_loadHalos_field():

@@ -86,7 +86,8 @@ def test_2():
 
 if __name__ == '__main__':
 
-    basePath = 'D:/IllustrisData/TNG100-1-Dark/output'
+    #basePath = 'D:/IllustrisData/TNG100-1-Dark/output'
+    basePath = '/home/andre/Illustris_Data/TNG100-1-Dark/output'
 
     #test_0()
     #test_1()

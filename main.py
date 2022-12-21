@@ -10,6 +10,7 @@ import illustris_python as il
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import h5py
 
 def getCount(listOfElems, cond = None):
     'Returns the count of elements in list that satisfies the given condition'
@@ -81,17 +82,58 @@ def test_2():
     count = getCount(HaloMasses, lambda x: x > 0.7 and x < 1.5)
     print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(count))
 
+    return
+
+def test_2validation():
+    # Open the HDF5 file in read-only mode
+    with h5py.File('D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.Group_M_Crit200.hdf5', 'r') as hdf5_file:
+        # Print the names of all the groups in the file
+        print(list(hdf5_file.keys()))
+
+        # Get the group with the name 'group_name'
+        group = hdf5_file['Group']
+
+        # Print the names of all the datasets in the group
+        print(list(group.keys()))
+
+        # Get the dataset with the name 'dataset_name'
+        dataset = group['Group_M_Crit200']
+
+        # Print the shape and data type of the dataset
+        print(dataset.shape)
+        print(dataset.dtype)
+
+        # Read the data from the dataset and store it in a NumPy array
+        data = dataset[...]
+        M200 = data * 1e10 / 0.6774
+
+    #HaloMasses = il.groupcat.loadHalos(basePath, 99, fields=['Group_M_Crit200'])
+    df2 = pd.DataFrame(M200)
+    df2.columns = ['HaloM_Crit200']
+    df2.assign(HaloM_Crit200=lambda x: 1e10*df2['HaloM_Crit200']/0.6774)
+    plt.hist(df2['HaloM_Crit200'], bins=100)
+    plt.ylabel('Log Number of FoF Halos')
+    plt.xlabel('Log10 (Halo Mass_Crit200)')
+    plt.title('Halo [Group_Mass_Crit200] Distribution')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.show()
+    print(df2.describe())
+
+    wcount = np.where((M200 > 0.7e12) & (M200 < 1.5e12))[0]
+    print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(len(wcount)))
 
     return
 
 if __name__ == '__main__':
 
-    #basePath = 'D:/IllustrisData/TNG100-1-Dark/output'
-    basePath = '/home/andre/Illustris_Data/TNG100-1-Dark/output'
+    basePath = 'D:/IllustrisData/TNG100-1-Dark/output'
+    #basePath = '/home/andre/Illustris_Data/TNG100-1-Dark/output'
 
     #test_0()
     #test_1()
-    test_2()
+    #test_2()
+    test_2validation()
 
 """
 def test_groupcat_loadHalos_field():

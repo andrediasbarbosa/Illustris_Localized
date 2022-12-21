@@ -11,6 +11,14 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
+def getCount(listOfElems, cond = None):
+    'Returns the count of elements in list that satisfies the given condition'
+    if cond:
+        count = sum(cond(elem) for elem in listOfElems)
+    else:
+        count = len(listOfElems)
+    return count
+
 def running_histogram(X, nBins=100, binSize=None, normFac=None):
     """ Create a adaptive histogram of a (x) point set using some number of bins. """
     if binSize is not None:
@@ -56,11 +64,11 @@ def test_1():
     plt.show()
     print(df2.describe())
 
-
 def test_2():
     HaloMasses = il.groupcat.loadHalos(basePath, 99, fields=['Group_M_Crit200'])
     df2 = pd.DataFrame(HaloMasses)
     df2.columns = ['HaloM_Crit200']
+    df2.assign(HaloM_Crit200=lambda x: 0.6774*df2['HaloM_Crit200']/100)
     plt.hist(df2['HaloM_Crit200'], bins=100)
     plt.ylabel('Log Number of FoF Halos')
     plt.xlabel('Log10 (Halo Mass_Crit200)')
@@ -69,6 +77,10 @@ def test_2():
     plt.xscale('log')
     plt.show()
     print(df2.describe())
+
+    count = getCount(HaloMasses, lambda x: x > 0.7 and x < 1.5)
+    print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(count))
+
 
     return
 
@@ -79,7 +91,6 @@ if __name__ == '__main__':
     #test_0()
     #test_1()
     test_2()
-
 
 """
 def test_groupcat_loadHalos_field():

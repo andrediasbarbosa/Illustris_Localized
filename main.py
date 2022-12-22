@@ -44,6 +44,35 @@ def running_histogram(X, nBins=100, binSize=None, normFac=None):
 
     return bin_centers, running_h
 
+def nested_histogram():
+
+    # Generate some random data
+    data1 = np.random.normal(100, 10, 200)
+    data2 = np.random.normal(90, 5, 200)
+    data3 = np.random.normal(80, 20, 200)
+
+    # Create the figure and axes objects
+    fig, axs = plt.subplots(3, 1, figsize=(10, 10))
+
+    # Calculate and plot the histograms
+    axs[0].hist(data1, bins=20, color='r')
+    axs[1].hist(data2, bins=20, color='g')
+    axs[2].hist(data3, bins=20, color='b')
+
+    # Add labels and titles
+    axs[0].set_title('Data 1')
+    axs[1].set_title('Data 2')
+    axs[2].set_title('Data 3')
+    fig.suptitle('Nested Histograms')
+
+    # Display the plot
+    plt.show()
+
+    return
+
+def mass_conversion(float):
+    return float * 1e10 / 0.6774
+
 def test_0():
     fields = ['GroupFirstSub']
     snap = 99
@@ -89,23 +118,20 @@ def test_2validation():
     with h5py.File('D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.Group_M_Crit200.hdf5', 'r') as hdf5_file:
         # Print the names of all the groups in the file
         print(list(hdf5_file.keys()))
-
         # Get the group with the name 'group_name'
         group = hdf5_file['Group']
-
         # Print the names of all the datasets in the group
         print(list(group.keys()))
-
         # Get the dataset with the name 'dataset_name'
         dataset = group['Group_M_Crit200']
-
         # Print the shape and data type of the dataset
         print(dataset.shape)
         print(dataset.dtype)
-
         # Read the data from the dataset and store it in a NumPy array
         data = dataset[...]
         M200 = data * 1e10 / 0.6774
+        print(data[0])
+        print(M200[0])
 
     #HaloMasses = il.groupcat.loadHalos(basePath, 99, fields=['Group_M_Crit200'])
     df2 = pd.DataFrame(M200)
@@ -125,7 +151,6 @@ def test_2validation():
 
     return
 
-
 def test_3():
     # Open the HDF5 file in read-only mode (this is the Halo Structure file with the following structure)
     #['E_s', 'GroupFlag', 'Header', 'M200c', 'M_acc_dyn', 'Mean_vel', 'R0p9', 'a_form', 'c200c', 'f_mass_Cen', 'q', 'q_vel', 's', 's_vel', 'sigma_1D', 'sigma_3D']
@@ -133,12 +158,26 @@ def test_3():
 
     #Validate the M200c count first
     # then work on Structural features
-
     with h5py.File('D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5', 'r') as hdf5_file:
         # Print the names of all the groups in the file
         print(list(hdf5_file.keys()))
         # Get the group with the name 'group_name'
-        print(len(hdf5_file['GroupFlag']))
+        M200 = hdf5_file['M200c']
+        print(M200)
+         # Print the shape and data type of the dataset
+        print(M200.shape)
+        print(M200.dtype)
+        # Read the data from the dataset and store it in a NumPy array
+        data = M200[...]
+        M200c = [10**number for number in data]
+        #print(data[0])
+        #print(M200c[0])
+
+        count = 0
+        for item in M200c:
+            if (item > 0.7e12 and item < 1.5e12):
+                count+=1
+        print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(count))
 
     return
 
@@ -152,8 +191,6 @@ if __name__ == '__main__':
     #test_2()
     #test_2validation()
     test_3()
-
-
 
 """
 def test_groupcat_loadHalos_field():

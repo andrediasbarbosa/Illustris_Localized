@@ -125,6 +125,21 @@ def test_2validation():
 
     return
 
+
+def test_3():
+    # Open the HDF5 file in read-only mode
+    with h5py.File('D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.Group_M_Crit200.hdf5', 'r') as hdf5_file:
+        # Print the names of all the groups in the file
+        print(list(hdf5_file.keys()))
+
+        # Get the group with the name 'group_name'
+        group = hdf5_file['Group']
+
+        # Print the names of all the datasets in the group
+        print(list(group.keys()))
+
+    return
+
 if __name__ == '__main__':
 
     basePath = 'D:/IllustrisData/TNG100-1-Dark/output'
@@ -133,7 +148,10 @@ if __name__ == '__main__':
     #test_0()
     #test_1()
     #test_2()
-    test_2validation()
+    #test_2validation()
+    test_3()
+
+
 
 """
 def test_groupcat_loadHalos_field():

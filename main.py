@@ -127,16 +127,18 @@ def test_2validation():
 
 
 def test_3():
-    # Open the HDF5 file in read-only mode
-    with h5py.File('D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.Group_M_Crit200.hdf5', 'r') as hdf5_file:
+    # Open the HDF5 file in read-only mode (this is the Halo Structure file with the following structure)
+    #['E_s', 'GroupFlag', 'Header', 'M200c', 'M_acc_dyn', 'Mean_vel', 'R0p9', 'a_form', 'c200c', 'f_mass_Cen', 'q', 'q_vel', 's', 's_vel', 'sigma_1D', 'sigma_3D']
+    # see: https://www.tng-project.org/data/docs/specifications/#sec5q
+
+    #Validate the M200c count first
+    # then work on Structural features
+
+    with h5py.File('D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5', 'r') as hdf5_file:
         # Print the names of all the groups in the file
         print(list(hdf5_file.keys()))
-
         # Get the group with the name 'group_name'
-        group = hdf5_file['Group']
-
-        # Print the names of all the datasets in the group
-        print(list(group.keys()))
+        print(len(hdf5_file['GroupFlag']))
 
     return
 

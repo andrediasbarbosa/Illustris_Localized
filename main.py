@@ -156,8 +156,8 @@ def test_3():
     #['E_s', 'GroupFlag', 'Header', 'M200c', 'M_acc_dyn', 'Mean_vel', 'R0p9', 'a_form', 'c200c', 'f_mass_Cen', 'q', 'q_vel', 's', 's_vel', 'sigma_1D', 'sigma_3D']
     # see: https://www.tng-project.org/data/docs/specifications/#sec5q
 
-    #Validate the M200c count first
-    # then work on Structural features
+    # Step0. Validate the M200c count first
+
     with h5py.File('D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5', 'r') as hdf5_file:
         # Print the names of all the groups in the file
         print(list(hdf5_file.keys()))
@@ -173,11 +173,16 @@ def test_3():
         #print(data[0])
         #print(M200c[0])
 
-        count = 0
-        for item in M200c:
-            if (item > 0.7e12 and item < 1.5e12):
-                count+=1
-        print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(count))
+    FoFSampleIndex=[]
+
+    for index,value in enumerate(M200c):
+        if value > 0.7e12 and value < 1.5e12:
+            FoFSampleIndex.append(index)
+
+    print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(len(FoFSampleIndex)))
+
+    # Step1. Now we can work on Structural features since we have the FoF Group Halo indeces
+    #       stored in FoFSampleIndex list which can now be used to extract the other features!
 
     return
 

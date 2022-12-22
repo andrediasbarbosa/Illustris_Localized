@@ -170,8 +170,6 @@ def test_3():
         # Read the data from the dataset and store it in a NumPy array
         data = M200[...]
         M200c = [10**number for number in data]
-        #print(data[0])
-        #print(M200c[0])
 
     FoFSampleIndex=[]
 

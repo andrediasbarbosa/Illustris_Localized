@@ -152,6 +152,7 @@ def test_2validation():
     return
 
 def test_3():
+
     # Open the HDF5 file in read-only mode (this is the Halo Structure file with the following structure)
     #['E_s', 'GroupFlag', 'Header', 'M200c', 'M_acc_dyn', 'Mean_vel', 'R0p9', 'a_form', 'c200c', 'f_mass_Cen', 'q', 'q_vel', 's', 's_vel', 'sigma_1D', 'sigma_3D']
     # see: https://www.tng-project.org/data/docs/specifications/#sec5q
@@ -160,13 +161,13 @@ def test_3():
 
     with h5py.File('D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5', 'r') as hdf5_file:
         # Print the names of all the groups in the file
-        print(list(hdf5_file.keys()))
+        #print(list(hdf5_file.keys()))
         # Get the group with the name 'M200c'
         M200c = hdf5_file['M200c']
-        print(M200c)
+        #print(M200c)
          # Print the shape and data type of the dataset
-        print(M200c.shape)
-        print(M200c.dtype)
+        #print(M200c.shape)
+        #print(M200c.dtype)
         # Read the data from the dataset and store it in a NumPy array
         data = M200c[...]
         M200cc = [10**number for number in data]
@@ -177,13 +178,10 @@ def test_3():
         if value > 0.7e12 and value < 1.5e12:
             FoFSampleIndex.append(index)
 
-    print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(len(FoFSampleIndex)))
-
+    #print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(len(FoFSampleIndex)))
     # Step1. Now we can work on Structural features since we have the FoF Group Halo indeces
     #       stored in FoFSampleIndex list which can now be used to extract the other features!
-
-    return
-
+    return FoFSampleIndex
 
 def test_structure():
     # Open the HDF5 file in read-only mode (this is the Halo Structure file with the following structure)
@@ -227,27 +225,26 @@ def test_structure():
 
 def test_4():
 
+    # run test_3 to get the masses Index and then run stats on this dataset
+    FoFSampleIndex = test_3()
+
+    #https: // www.tng - project.org / data / docs / specifications /  # sec5q
     # Open the HDF5 file
     h5py_file = h5py.File("D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5", "r")
-
     datasets = list(h5py_file.keys())
-
     # Create an empty dataframe
     df = pd.DataFrame()
-
     # Iterate through the datasets and add them as columns to the dataframe
     for dataset in datasets:
         if dataset =='GroupFlag' or dataset =='M200c' or dataset =='E_s':
             df[dataset] = h5py_file[dataset]
-
     # Close the H5PY file
     h5py_file.close()
-
     print(df.describe())
-
-    print("The 12th Galaxy has the following features:")
-    print(df['M200c'][12])
-    print(df['E_s'][12])
+    first_index = FoFSampleIndex[0]
+    print("The " + str(first_index) + "1h Galaxy has the following features:")
+    print(df['M200c'][first_index])
+    print(df['E_s'][first_index])
 
     return
 

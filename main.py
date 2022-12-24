@@ -161,19 +161,19 @@ def test_3():
     with h5py.File('D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5', 'r') as hdf5_file:
         # Print the names of all the groups in the file
         print(list(hdf5_file.keys()))
-        # Get the group with the name 'group_name'
-        M200 = hdf5_file['M200c']
-        print(M200)
+        # Get the group with the name 'M200c'
+        M200c = hdf5_file['M200c']
+        print(M200c)
          # Print the shape and data type of the dataset
-        print(M200.shape)
-        print(M200.dtype)
+        print(M200c.shape)
+        print(M200c.dtype)
         # Read the data from the dataset and store it in a NumPy array
-        data = M200[...]
-        M200c = [10**number for number in data]
+        data = M200c[...]
+        M200cc = [10**number for number in data]
 
     FoFSampleIndex=[]
 
-    for index,value in enumerate(M200c):
+    for index,value in enumerate(M200cc):
         if value > 0.7e12 and value < 1.5e12:
             FoFSampleIndex.append(index)
 
@@ -181,6 +181,73 @@ def test_3():
 
     # Step1. Now we can work on Structural features since we have the FoF Group Halo indeces
     #       stored in FoFSampleIndex list which can now be used to extract the other features!
+
+    return
+
+
+def test_structure():
+    # Open the HDF5 file in read-only mode (this is the Halo Structure file with the following structure)
+    #['E_s', 'GroupFlag', 'Header', 'M200c', 'M_acc_dyn', 'Mean_vel', 'R0p9', 'a_form', 'c200c', 'f_mass_Cen', 'q', 'q_vel', 's', 's_vel', 'sigma_1D', 'sigma_3D']
+    # see: https://www.tng-project.org/data/docs/specifications/#sec5q
+
+    #with h5py.File('D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5', 'r') as hdf5_file:
+
+    with h5py.File("D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5", "r") as f:
+        # Print the name of the file or group
+        print(f.name)
+
+        # Iterate over the attributes of the file or group
+        for key, value in f.attrs.items():
+            print(f"  Attribute: {key}, Value: {value}")
+
+        # Iterate over the datasets in the file or group
+        for key in f.keys():
+            dset = f[key]
+            print(f"  Dataset: {dset.name}")
+
+        # Iterate over the subgroups in the file or group
+        for key in f.keys():
+            if isinstance(f[key], h5py.Group):
+                print(f"  Group: {f[key].name}")
+                # Print the name of the subgroup
+                print(f[key].name)
+                # Iterate over the attributes of the subgroup
+                for subkey, subvalue in f[key].attrs.items():
+                    print(f"    Attribute: {subkey}, Value: {subvalue}")
+                # Iterate over the datasets in the subgroup
+                for subkey in f[key].keys():
+                    subdset = f[key][subkey]
+                    print(f"    Dataset: {subdset.name}")
+                # Iterate over the subgroups in the subgroup
+                for subkey in f[key].keys():
+                    if isinstance(f[key][subkey], h5py.Group):
+                        print(f"    Group: {f[key][subkey].name}")
+
+    return
+
+def test_4():
+
+    # Open the HDF5 file
+    h5py_file = h5py.File("D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5", "r")
+
+    datasets = list(h5py_file.keys())
+
+    # Create an empty dataframe
+    df = pd.DataFrame()
+
+    # Iterate through the datasets and add them as columns to the dataframe
+    for dataset in datasets:
+        if dataset =='GroupFlag' or dataset =='M200c' or dataset =='E_s':
+            df[dataset] = h5py_file[dataset]
+
+    # Close the H5PY file
+    h5py_file.close()
+
+    print(df.describe())
+
+    print("The 12th Galaxy has the following features:")
+    print(df['M200c'][12])
+    print(df['E_s'][12])
 
     return
 
@@ -193,7 +260,9 @@ if __name__ == '__main__':
     #test_1()
     #test_2()
     #test_2validation()
-    test_3()
+    #test_3()
+    #test_structure()
+    test_4()
 
 """
 def test_groupcat_loadHalos_field():

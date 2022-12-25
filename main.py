@@ -246,7 +246,7 @@ def test_4():
     HCSampleIndex = test_3()
 
     if FoFSampleIndex == HCSampleIndex:
-        print("The FoF-HCatalog arrays of MW analogues are equal.\n")
+        print("The FoF-HCatalog arrays of MW analogues are equal and have this many records:" + str(len(FoFSampleIndex)))
     else:
         print("The FoF-HCatalog arrays of MW analogues are not equal.\n")
 
@@ -260,6 +260,7 @@ def test_4():
     for dataset in datasets:
         if dataset =='GroupFlag' or dataset =='M200c' or dataset =='E_s' or dataset =='sigma_3D' or dataset =='f_mass_Cen':
             df[dataset] = h5py_file[dataset]
+            #need to add only relevant entries [FoFSampleIndex]
     # Close the H5PY file
     h5py_file.close()
 
@@ -285,6 +286,8 @@ def test_4():
     print(df['M200c'][first_index])
     print(df['E_s'][first_index])
     print(df['GroupFirstSub'][first_index])
+    #print("the total number of Columns is:" + df.index)
+    print("the total number of MW Analoges is:" + str(len(df)))
 
     return
 

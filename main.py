@@ -267,15 +267,9 @@ def test_4():
     # Open the HDF5 file -> Original FoF Halos
     # https://www.tng-project.org/api/TNG100-1-Dark/files/groupcat-99/?Group=GroupFirstSub
     with h5py.File('D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.GroupFirstSub.hdf5', 'r') as hdf5_a_file:
-        # Print the names of all the groups in the file
         print(list(hdf5_a_file.keys()))
-        # Get the group with the name 'group_name'
         group = hdf5_a_file['Group']
-        # Print the names of all the datasets in the group
-        print(list(group.keys()))
-        # Get the dataset with the name 'dataset_name'
         dataset = group['GroupFirstSub']
-        # Print the shape and data type of the dataset
         df['GroupFirstSub'] = dataset[...]
     hdf5_a_file.close()
 
@@ -286,7 +280,6 @@ def test_4():
     print(df['M200c'][first_index])
     print(df['E_s'][first_index])
     print(df['GroupFirstSub'][first_index])
-    #print("the total number of Columns is:" + df.index)
     print("the total number of MW Analoges is:" + str(len(df)))
 
     return

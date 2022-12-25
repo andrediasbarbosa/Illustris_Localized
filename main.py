@@ -155,6 +155,8 @@ def test_2validation():
 
 def get_sample_fof():
     # Open the HDF5 file in read-only mode
+    # https://www.tng-project.org/api/Illustris-1/files/groupcat-135/?Group=Group_M_Crit200
+
     with h5py.File('D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.Group_M_Crit200.hdf5', 'r') as hdf5_file:
         group = hdf5_file['Group']
         dataset = group['Group_M_Crit200']
@@ -199,13 +201,10 @@ def test_3():
     return FoFSampleIndex
 
 def test_structure():
-    # Open the HDF5 file in read-only mode (this is the Halo Structure file with the following structure)
-    #['E_s', 'GroupFlag', 'Header', 'M200c', 'M_acc_dyn', 'Mean_vel', 'R0p9', 'a_form', 'c200c', 'f_mass_Cen', 'q', 'q_vel', 's', 's_vel', 'sigma_1D', 'sigma_3D']
-    # see: https://www.tng-project.org/data/docs/specifications/#sec5q
 
-    #with h5py.File('D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5', 'r') as hdf5_file:
-
-    with h5py.File("D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5", "r") as f:
+    #with h5py.File("D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5", "r") as f:
+    #with h5py.File("D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.Group_M_Crit200.hdf5", "r") as f:
+    with h5py.File("D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.GroupFirstSub.hdf5", "r") as f:
         # Print the name of the file or group
         print(f.name)
 
@@ -252,7 +251,7 @@ def test_4():
         print("The FoF-HCatalog arrays of MW analogues are not equal.\n")
 
     #https: // www.tng - project.org / data / docs / specifications /  # sec5q
-    # Open the HDF5 file
+    # Open the HDF5 file -> Halo Structure
     h5py_file = h5py.File("D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5", "r")
     datasets = list(h5py_file.keys())
     # Create an empty dataframe
@@ -263,11 +262,29 @@ def test_4():
             df[dataset] = h5py_file[dataset]
     # Close the H5PY file
     h5py_file.close()
+
+    # Open the HDF5 file -> Original FoF Halos
+    # https://www.tng-project.org/api/TNG100-1-Dark/files/groupcat-99/?Group=GroupFirstSub
+    with h5py.File('D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.GroupFirstSub.hdf5', 'r') as hdf5_a_file:
+        # Print the names of all the groups in the file
+        print(list(hdf5_a_file.keys()))
+        # Get the group with the name 'group_name'
+        group = hdf5_a_file['Group']
+        # Print the names of all the datasets in the group
+        print(list(group.keys()))
+        # Get the dataset with the name 'dataset_name'
+        dataset = group['GroupFirstSub']
+        # Print the shape and data type of the dataset
+        df['GroupFirstSub'] = dataset[...]
+    hdf5_a_file.close()
+
     print(df.describe())
+
     first_index = FoFSampleIndex[0]
     print("The " + str(first_index) + "1h Galaxy has the following features:")
     print(df['M200c'][first_index])
     print(df['E_s'][first_index])
+    print(df['GroupFirstSub'][first_index])
 
     return
 

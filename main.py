@@ -95,6 +95,7 @@ def test_1():
     print(df2.describe())
 
 def test_2():
+
     HaloMasses = il.groupcat.loadHalos(basePath, 99, fields=['Group_M_Crit200'])
     df2 = pd.DataFrame(HaloMasses)
     df2.columns = ['HaloM_Crit200']
@@ -151,6 +152,23 @@ def test_2validation():
 
     return
 
+
+def get_sample_fof():
+    # Open the HDF5 file in read-only mode
+    with h5py.File('D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.Group_M_Crit200.hdf5', 'r') as hdf5_file:
+        group = hdf5_file['Group']
+        dataset = group['Group_M_Crit200']
+        data = dataset[...]
+        M200 = data * 1e10 / 0.6774
+
+    FoFSampleIndex=[]
+
+    for index,value in enumerate(M200):
+        if value > 0.7e12 and value < 1.5e12:
+            FoFSampleIndex.append(index)
+
+    return FoFSampleIndex
+
 def test_3():
 
     # Open the HDF5 file in read-only mode (this is the Halo Structure file with the following structure)
@@ -178,9 +196,6 @@ def test_3():
         if value > 0.7e12 and value < 1.5e12:
             FoFSampleIndex.append(index)
 
-    #print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(len(FoFSampleIndex)))
-    # Step1. Now we can work on Structural features since we have the FoF Group Halo indeces
-    #       stored in FoFSampleIndex list which can now be used to extract the other features!
     return FoFSampleIndex
 
 def test_structure():
@@ -225,8 +240,16 @@ def test_structure():
 
 def test_4():
 
-    # run test_3 to get the masses Index and then run stats on this dataset
-    FoFSampleIndex = test_3()
+    # run test_2 to get the MW analogues Index (based on FoF Catalog) and then run stats on this dataset
+    FoFSampleIndex = get_sample_fof()
+
+    # run test_3 to get the MW analogues Index (based on Halo Catalogue) and then run stats on this dataset
+    HCSampleIndex = test_3()
+
+    if FoFSampleIndex == HCSampleIndex:
+        print("The FoF-HCatalog arrays of MW analogues are equal.")
+    else:
+        print("The FoF-HCatalog arrays of MW analogues are not equal.")
 
     #https: // www.tng - project.org / data / docs / specifications /  # sec5q
     # Open the HDF5 file

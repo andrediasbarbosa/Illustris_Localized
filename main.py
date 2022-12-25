@@ -259,7 +259,7 @@ def test_4():
     df = pd.DataFrame()
     # Iterate through the datasets and add them as columns to the dataframe
     for dataset in datasets:
-        if dataset =='GroupFlag' or dataset =='M200c' or dataset =='E_s':
+        if dataset =='GroupFlag' or dataset =='M200c' or dataset =='E_s' or dataset =='sigma_3D' or dataset =='f_mass_Cen':
             df[dataset] = h5py_file[dataset]
     # Close the H5PY file
     h5py_file.close()

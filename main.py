@@ -247,9 +247,9 @@ def test_4():
     HCSampleIndex = test_3()
 
     if FoFSampleIndex == HCSampleIndex:
-        print("The FoF-HCatalog arrays of MW analogues are equal.")
+        print("The FoF-HCatalog arrays of MW analogues are equal.\n")
     else:
-        print("The FoF-HCatalog arrays of MW analogues are not equal.")
+        print("The FoF-HCatalog arrays of MW analogues are not equal.\n")
 
     #https: // www.tng - project.org / data / docs / specifications /  # sec5q
     # Open the HDF5 file

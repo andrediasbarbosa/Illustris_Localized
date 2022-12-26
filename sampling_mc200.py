@@ -274,10 +274,9 @@ def test_4():
     print(df.describe())
 
     #printing out the main features of the first Fof (MW analogue)
-    index = FoFSampleIndex[10]
-    index = 9081
+    index = FoFSampleIndex[100]
 
-    print("The " + str(index) + "1h Galaxy has the following features:")
+    print("The " + str(index) + "th Galaxy has the following features:")
     print("GroupFlag=" + str(df['GroupFlag'][index]))
     print("GroupFirstSub=" + str(df['GroupFirstSub'][index]))
     print("M200c=" + str(df['M200c'][index]))
@@ -285,17 +284,6 @@ def test_4():
     print("sigma_3D=" + str(df['sigma_3D'][index]))
     print("f_mass_Cen=" + str(df['f_mass_Cen'][index]))
 
-    return
-
-def test_groupcat_loadHalos_field():
-
-    fields = ['GroupFirstSub']
-    snap = 99
-    group_first_sub = ill.groupcat.loadHalos(basePath, snap, fields=fields)
-    print("group_first_sub.shape = ", group_first_sub.shape)
-    #assert_equal(group_first_sub.shape, (7713601,))
-    print("group_first_sub = ", group_first_sub)
-    #assert_true(np.all(group_first_sub[:3] == [0, 16937, 30430]))
     return
 
 if __name__ == '__main__':
@@ -311,7 +299,6 @@ if __name__ == '__main__':
     #test_3()
     #test_structure()
     test_4()
-    #test_groupcat_loadHalos_field()
 
 """
 def test_groupcat_loadHalos_all_fields():

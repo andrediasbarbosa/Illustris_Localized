@@ -113,10 +113,6 @@ def test_2():
     count = getCount(HaloMasses, lambda x: x > 0.7 and x < 1.5)
     print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(count))
 
-    print("Group_M_Crit200[9080] = ", HaloMasses[9080])
-    print("Group_M_Crit200[9081] = ", HaloMasses[9081])
-    print("Group_M_Crit200[9082] = ", HaloMasses[9082])
-
     return
 
 def test_2validation():

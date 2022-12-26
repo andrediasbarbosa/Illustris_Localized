@@ -6,7 +6,7 @@
 #Total number of Halos = 4231400
 # Try this: https://www.tng-project.org/data/forum/topic/31/plotting-number-of-halos-per-mass-bin/
 
-import illustris_python as il
+import illustris_python as ill
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -76,13 +76,15 @@ def mass_conversion(float):
 def test_0():
     fields = ['GroupFirstSub']
     snap = 99
-    group_first_sub = il.groupcat.loadHalos(basePath, snap, fields=fields)
+    group_first_sub = ill.groupcat.loadHalos(basePath, snap, fields=fields)
     print("group_first_sub.shape = ", group_first_sub.shape)
-    print("group_first_sub = ", group_first_sub[1])
+    print("group_first_sub[9080] = ", group_first_sub[9080])
+    print("group_first_sub[9081] = ", group_first_sub[9081])
+    print("group_first_sub[9082] = ", group_first_sub[9082])
     return
 
 def test_1():
-    HaloMasses = il.groupcat.loadHalos(basePath, 99, fields=['GroupMass'])
+    HaloMasses = ill.groupcat.loadHalos(basePath, 99, fields=['GroupMass'])
     df2 = pd.DataFrame(HaloMasses)
     df2.columns = ['HaloMass']
     df2.assign(LogMass=lambda x: np.log(df2['HaloMass']))
@@ -95,8 +97,7 @@ def test_1():
     print(df2.describe())
 
 def test_2():
-
-    HaloMasses = il.groupcat.loadHalos(basePath, 99, fields=['Group_M_Crit200'])
+    HaloMasses = ill.groupcat.loadHalos(basePath, 99, fields=['Group_M_Crit200'])
     df2 = pd.DataFrame(HaloMasses)
     df2.columns = ['HaloM_Crit200']
     df2.assign(HaloM_Crit200=lambda x: 0.6774*df2['HaloM_Crit200']/100)
@@ -111,6 +112,10 @@ def test_2():
 
     count = getCount(HaloMasses, lambda x: x > 0.7 and x < 1.5)
     print("\n the number of FoF satisfying the [0,7;1.5]M condition is:" + str(count))
+
+    print("Group_M_Crit200[9080] = ", HaloMasses[9080])
+    print("Group_M_Crit200[9081] = ", HaloMasses[9081])
+    print("Group_M_Crit200[9082] = ", HaloMasses[9082])
 
     return
 
@@ -273,8 +278,8 @@ def test_4():
     print(df.describe())
 
     #printing out the main features of the first Fof (MW analogue)
-    #if dataset == 'GroupFlag' or dataset == 'M200c' or dataset == 'E_s' or dataset == 'sigma_3D' or dataset == 'f_mass_Cen':
     index = FoFSampleIndex[10]
+    index = 9081
 
     print("The " + str(index) + "1h Galaxy has the following features:")
     print("GroupFlag=" + str(df['GroupFlag'][index]))
@@ -286,8 +291,20 @@ def test_4():
 
     return
 
+def test_groupcat_loadHalos_field():
+
+    fields = ['GroupFirstSub']
+    snap = 99
+    group_first_sub = ill.groupcat.loadHalos(basePath, snap, fields=fields)
+    print("group_first_sub.shape = ", group_first_sub.shape)
+    #assert_equal(group_first_sub.shape, (7713601,))
+    print("group_first_sub = ", group_first_sub)
+    #assert_true(np.all(group_first_sub[:3] == [0, 16937, 30430]))
+    return
+
 if __name__ == '__main__':
 
+    # Config basepath accordingly (Linux vs Windows)
     basePath = 'D:/IllustrisData/TNG100-1-Dark/output'
     #basePath = '/home/andre/Illustris_Data/TNG100-1-Dark/output'
 
@@ -298,19 +315,9 @@ if __name__ == '__main__':
     #test_3()
     #test_structure()
     test_4()
+    #test_groupcat_loadHalos_field()
 
 """
-def test_groupcat_loadHalos_field():
-    fields = ['GroupFirstSub']
-    snap = 135
-    group_first_sub = ill.groupcat.loadHalos(BASE_PATH_ILLUSTRIS_1, snap, fields=fields)
-    print("group_first_sub.shape = ", group_first_sub.shape)
-    assert_equal(group_first_sub.shape, (7713601,))
-    print("group_first_sub = ", group_first_sub)
-    assert_true(np.all(group_first_sub[:3] == [0, 16937, 30430]))
-    return
-
-
 def test_groupcat_loadHalos_all_fields():
     snap = 135
     num_fields = 23

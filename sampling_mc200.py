@@ -274,7 +274,7 @@ def test_4():
     print(df.describe())
 
     #printing out the main features of the first Fof (MW analogue)
-    index = FoFSampleIndex[100]
+    index = FoFSampleIndex[10]
 
     print("The " + str(index) + "th Galaxy has the following features:")
     print("GroupFlag=" + str(df['GroupFlag'][index]))
@@ -283,6 +283,22 @@ def test_4():
     print("E_s=" + str(df['E_s'][index]))
     print("sigma_3D=" + str(df['sigma_3D'][index]))
     print("f_mass_Cen=" + str(df['f_mass_Cen'][index]))
+
+    return
+
+
+def test_5():
+    #load halos and respective sub-halos using the local API
+    #[use various methods in the local API]
+
+    fields = ['Group_M_Crit200', 'GroupFirstSub']
+    snap = 99
+    halos = ill.groupcat.loadHalos(basePath, snap, fields=fields)
+    print("halos['Group_M_Crit200'] = ", halos['Group_M_Crit200'].shape)
+    print("halos['GroupFirstSub'] = ", halos['GroupFirstSub'])
+
+    subfields = ['SubhaloFlag', 'SubhaloBHMass']
+    subhalos = ill.groupcat.loadSubhalos(basePath, snap, fields=subfields)
 
     return
 
@@ -298,8 +314,8 @@ if __name__ == '__main__':
     #test_2validation()
     #test_3()
     #test_structure()
-    test_4()
-
+    #test_4()
+    test_5()
 """
 def test_groupcat_loadHalos_all_fields():
     snap = 135

@@ -291,8 +291,8 @@ def test_5():
     #load halos and respective sub-halos using the local API
     #[use various methods in the local API]
 
-    fields = ['Group_M_Crit200', 'GroupFirstSub']
     snap = 99
+    fields = ['Group_M_Crit200', 'GroupFirstSub']
     halos = ill.groupcat.loadHalos(basePath, snap, fields=fields)
     print("halos['Group_M_Crit200'] = ", halos['Group_M_Crit200'].shape)
     print("halos['GroupFirstSub'] = ", halos['GroupFirstSub'])

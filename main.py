@@ -241,10 +241,8 @@ def test_4():
 
     # run test_2 to get the MW analogues Index (based on FoF Catalog) and then run stats on this dataset
     FoFSampleIndex = get_sample_fof()
-
     # run test_3 to get the MW analogues Index (based on Halo Catalogue) and then run stats on this dataset
     HCSampleIndex = test_3()
-
     if FoFSampleIndex == HCSampleIndex:
         print("The FoF-HCatalog arrays of MW analogues are equal and have this many records:" + str(len(FoFSampleIndex)))
     else:
@@ -272,15 +270,21 @@ def test_4():
         dataset = group['GroupFirstSub']
         df['GroupFirstSub'] = dataset[...]
     hdf5_a_file.close()
-
     print(df.describe())
 
-    first_index = FoFSampleIndex[0]
-    print("The " + str(first_index) + "1h Galaxy has the following features:")
-    print(df['M200c'][first_index])
-    print(df['E_s'][first_index])
-    print(df['GroupFirstSub'][first_index])
-    print("the total number of MW Analoges is:" + str(len(df)))
+    #printing out the main features of the first Fof (MW analogue)
+    #if dataset == 'GroupFlag' or dataset == 'M200c' or dataset == 'E_s' or dataset == 'sigma_3D' or dataset == 'f_mass_Cen':
+    index = FoFSampleIndex[10]
+
+    print("The " + str(index) + "1h Galaxy has the following features:")
+    print("GroupFlag=" + str(df['GroupFlag'][index]))
+    print("GroupFirstSub=" + str(df['GroupFirstSub'][index]))
+    print("M200c=" + str(df['M200c'][index]))
+    print("E_s=" + str(df['E_s'][index]))
+    print("sigma_3D=" + str(df['sigma_3D'][index]))
+    print("E_s=" + str(df['E_s'][index]))
+    print("f_mass_Cen=" + str(df['f_mass_Cen'][index]))
+
 
     return
 

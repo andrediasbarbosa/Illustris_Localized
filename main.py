@@ -282,9 +282,7 @@ def test_4():
     print("M200c=" + str(df['M200c'][index]))
     print("E_s=" + str(df['E_s'][index]))
     print("sigma_3D=" + str(df['sigma_3D'][index]))
-    print("E_s=" + str(df['E_s'][index]))
     print("f_mass_Cen=" + str(df['f_mass_Cen'][index]))
-
 
     return
 

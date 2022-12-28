@@ -303,6 +303,34 @@ def test_5():
 
     return
 
+
+def test_subhalo_gasfrac():
+
+    # run test_2 to get the MW analogues Index (based on FoF Catalog) and then run stats on this dataset
+    FoFSampleIndex = get_sample_fof()
+
+    # now we need to get the SubHalo indexes for these
+    snap = 99
+    fields = ['GroupFirstSub']
+    halos = ill.groupcat.loadHalos(basePath, snap, fields=fields)
+    subHaloSampleIndex = []
+    for item in FoFSampleIndex:
+        subHaloSampleIndex.append(halos[item])
+
+    print(subHaloSampleIndex)
+    ptNumGas = ill.snapshot.partTypeNum('gas')  # 0
+    ptNumStars = ill.snapshot.partTypeNum('stars')  # 4
+
+    # retrieving some specific values for each SubHalo
+    for item in subHaloSampleIndex[:10]:
+        all_fields = ill.groupcat.loadSingle(basePath, 99, subhaloID=item)
+        gas_mass = all_fields['SubhaloMassInHalfRadType'][ptNumGas]
+        stars_mass = all_fields['SubhaloMassInHalfRadType'][ptNumStars]
+        #frac = gas_mass / (gas_mass + stars_mass)
+        #print(i, group_first_sub[i], frac)
+        print("Subhalo:{} has gas_mass={} and stars_mass={})".format(item, gas_mass, stars_mass))
+    return
+
 if __name__ == '__main__':
 
     # Config basepath accordingly (Linux vs Windows)
@@ -316,7 +344,8 @@ if __name__ == '__main__':
     #test_3()
     #test_structure()
     #test_4()
-    test_5()
+    #test_5()
+    test_subhalo_gasfrac()
 """
 def test_groupcat_loadHalos_all_fields():
     snap = 135

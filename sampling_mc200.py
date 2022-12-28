@@ -318,6 +318,7 @@ def test_subhalo_gasfrac():
         subHaloSampleIndex.append(halos[item])
 
     print(subHaloSampleIndex)
+    ptNumDm = ill.snapshot.partTypeNum('dm') # 1
     ptNumGas = ill.snapshot.partTypeNum('gas')  # 0
     ptNumStars = ill.snapshot.partTypeNum('stars')  # 4
 

@@ -297,8 +297,9 @@ def test_5():
     print("halos['Group_M_Crit200'] = ", halos['Group_M_Crit200'].shape)
     print("halos['GroupFirstSub'] = ", halos['GroupFirstSub'])
 
-    subfields = ['SubhaloFlag', 'SubhaloBHMass']
+    subfields = ['SubhaloLen']
     subhalos = ill.groupcat.loadSubhalos(basePath, snap, fields=subfields)
+    print(subhalos[10])
 
     return
 

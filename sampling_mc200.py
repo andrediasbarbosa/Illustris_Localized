@@ -286,24 +286,6 @@ def test_4():
 
     return
 
-
-def test_5():
-    #load halos and respective sub-halos using the local API
-    #[use various methods in the local API]
-
-    snap = 99
-    fields = ['Group_M_Crit200', 'GroupFirstSub']
-    halos = ill.groupcat.loadHalos(basePath, snap, fields=fields)
-    print("halos['Group_M_Crit200'] = ", halos['Group_M_Crit200'].shape)
-    print("halos['GroupFirstSub'] = ", halos['GroupFirstSub'])
-
-    subfields = ['SubhaloLen']
-    subhalos = ill.groupcat.loadSubhalos(basePath, snap, fields=subfields)
-    print(subhalos[10])
-
-    return
-
-
 def test_subhalo_gasfrac():
 
     # run test_2 to get the MW analogues Index (based on FoF Catalog) and then run stats on this dataset
@@ -332,6 +314,22 @@ def test_subhalo_gasfrac():
         print("Subhalo:{} has gas_mass={} and stars_mass={})".format(item, gas_mass, stars_mass))
     return
 
+def test_5():
+    #load halos and respective sub-halos using the local API
+    #[use various methods in the local API]
+
+    snap = 99
+    fields = ['Group_M_Crit200', 'GroupFirstSub']
+    halos = ill.groupcat.loadHalos(basePath, snap, fields=fields)
+    print("halos['Group_M_Crit200'] = ", halos['Group_M_Crit200'].shape)
+    print("halos['GroupFirstSub'] = ", halos['GroupFirstSub'])
+
+    subfields = ['SubhaloLen']
+    subhalos = ill.groupcat.loadSubhalos(basePath, snap, fields=subfields)
+    print(subhalos[10])
+
+    return
+
 if __name__ == '__main__':
 
     # Config basepath accordingly (Linux vs Windows)
@@ -345,8 +343,8 @@ if __name__ == '__main__':
     #test_3()
     #test_structure()
     #test_4()
-    #test_5()
-    test_subhalo_gasfrac()
+    #test_subhalo_gasfrac()
+    test_5()
 """
 def test_groupcat_loadHalos_all_fields():
     snap = 135

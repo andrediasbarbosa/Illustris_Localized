@@ -180,7 +180,7 @@ def test_3():
 
     # Step0. Validate the M200c count first
 
-    with h5py.File('D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5', 'r') as hdf5_file:
+    with h5py.File('D:/IllustrisData/TNG100-1-Dark/postprocessing/catalog_name/halo_structure_099.hdf5', 'r') as hdf5_file:
         # Print the names of all the groups in the file
         #print(list(hdf5_file.keys()))
         # Get the group with the name 'M200c'
@@ -251,7 +251,7 @@ def test_4():
 
     #https: // www.tng - project.org / data / docs / specifications /  # sec5q
     # Open the HDF5 file -> Halo Structure
-    h5py_file = h5py.File("D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5", "r")
+    h5py_file = h5py.File("D:/IllustrisData/TNG100-1-Dark/postprocessing/catalog_name/halo_structure_099.hdf5", "r")
     datasets = list(h5py_file.keys())
     # Create an empty dataframe
     df = pd.DataFrame()

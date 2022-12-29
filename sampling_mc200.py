@@ -205,7 +205,8 @@ def test_structure():
 
     #with h5py.File("D:/IllustrisData/TNG100-1-Dark/halo_structure/halo_structure_099.hdf5", "r") as f:
     #with h5py.File("D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.Group_M_Crit200.hdf5", "r") as f:
-    with h5py.File("D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.GroupFirstSub.hdf5", "r") as f:
+    #with h5py.File("D:/IllustrisData/TNG100-1-Dark/adhoc/fof_subhalo_tab_099.Group.GroupFirstSub.hdf5", "r") as f:
+    with h5py.File("D:\IllustrisData\TNG100-1-Dark\postprocessing\catalog_name\subhalo_matching_to_dark.hdf5", "r") as f:
         # Print the name of the file or group
         print(f.name)
 
@@ -271,20 +272,20 @@ def test_4():
         dataset = group['GroupFirstSub']
         df['GroupFirstSub'] = dataset[...]
     hdf5_a_file.close()
-    print(df.describe())
+    #print(df.describe())
 
     #printing out the main features of the first Fof (MW analogue)
     index = FoFSampleIndex[10]
 
-    print("The " + str(index) + "th Galaxy has the following features:")
-    print("GroupFlag=" + str(df['GroupFlag'][index]))
-    print("GroupFirstSub=" + str(df['GroupFirstSub'][index]))
-    print("M200c=" + str(df['M200c'][index]))
-    print("E_s=" + str(df['E_s'][index]))
-    print("sigma_3D=" + str(df['sigma_3D'][index]))
-    print("f_mass_Cen=" + str(df['f_mass_Cen'][index]))
+    #print("The " + str(index) + "th Galaxy has the following features:")
+    #print("GroupFlag=" + str(df['GroupFlag'][index]))
+    #print("GroupFirstSub=" + str(df['GroupFirstSub'][index]))
+    #print("M200c=" + str(df['M200c'][index]))
+    #print("E_s=" + str(df['E_s'][index]))
+    #print("sigma_3D=" + str(df['sigma_3D'][index]))
+    #print("f_mass_Cen=" + str(df['f_mass_Cen'][index]))
 
-    return
+    return df
 
 def test_subhalo_gasfrac():
 
@@ -314,19 +315,78 @@ def test_subhalo_gasfrac():
         print("Subhalo:{} has gas_mass={} and stars_mass={})".format(item, gas_mass, stars_mass))
     return
 
+def baryon_dm_values(val,map):
+    return map.index(val)
+
+def disk_values(val,map1,map2):
+    return map2[map1.index(val)]
+
 def test_5():
-    #load halos and respective sub-halos using the local API
-    #[use various methods in the local API]
+    # Augment the FoFSampleInde with
+    # GroupFirstSubBaryonic [revmap->GroupFirstSub]
+    # + the following fields from (c) Stellar Circularities:
+    # CircAbove07Frac ; CircAbove07MinusBelowNeg07Frac ; CircTwiceBelow0Frac
+    # https://www.tng-project.org/data/docs/specifications/#sec5c
 
-    snap = 99
-    fields = ['Group_M_Crit200', 'GroupFirstSub']
-    halos = ill.groupcat.loadHalos(basePath, snap, fields=fields)
-    print("halos['Group_M_Crit200'] = ", halos['Group_M_Crit200'].shape)
-    print("halos['GroupFirstSub'] = ", halos['GroupFirstSub'])
+    #Step 0 -> build a dataframe with the Mc200 Halo Sample, including [DM GroupFirstSub]
+    data = test_4()
+    FoFSampleIndex = get_sample_fof()
+    Halodata = data.reset_index()
+    Halodata = Halodata[Halodata.index.isin(FoFSampleIndex)]
+    print(Halodata)
 
-    subfields = ['SubhaloLen']
-    subhalos = ill.groupcat.loadSubhalos(basePath, snap, fields=subfields)
-    print(subhalos[10])
+    #Step 1 -> add the Baryonic counterpart to the latter as [DM_Baryon_SubLink]
+    mapsubbaryonic_dm = []
+    with h5py.File('D:\IllustrisData\TNG100-1-Dark\postprocessing\catalog_name\subhalo_matching_to_dark.hdf5', 'r') as hdf5_a_file:
+        print(list(hdf5_a_file.keys()))
+        group = hdf5_a_file['Snapshot_99']
+        dataset = group['SubhaloIndexDark_LHaloTree']
+        mapsubbaryonic_dm = list(dataset)
+    hdf5_a_file.close()
+
+    Halodata['Baryon_LsHalo'] = Halodata.apply(lambda row: baryon_dm_values(row['GroupFirstSub'],mapsubbaryonic_dm), axis=1)
+    print(Halodata)
+
+    # Step 2 -> add the (d) Stellar Circularities columns
+    # [CircAbove07Frac] ; [CircAbove07MinusBelowNeg07Frac] ; [CircTwiceBelow0Frac]
+    mapsubfind_id = []
+    mapcircabove07 = []
+    with h5py.File('D:\IllustrisData\TNG100-1-Dark\postprocessing\catalog_name\stellar_circs.hdf5', 'r') as hdf5_b_file:
+        print(list(hdf5_b_file.keys()))
+        group = hdf5_b_file['Snapshot_99']
+        dataset1 = group['SubfindID']
+        dataset2 = group['CircAbove07Frac']
+        mapsubfind_id = list(dataset1)
+        mapcircabove07 = list(dataset2)
+    hdf5_b_file.close()
+
+    Halodata['SubHalo_CircAbove07'] = Halodata.apply(lambda row: disk_values(row['Baryon_LsHalo'],mapsubfind_id,mapcircabove07), axis=1)
+    print(Halodata)
+
+    # Step 3 -> Plotting the Histogram of [SubHalo_CircAbove07]
+    Halodata['SubHalo_CircAbove07'].hist(bins=200)
+    plt.title('Histogram of Stellar Circularities for Sample of MW-like Halos')
+    plt.xlabel('SubHalo_CircAbove07')
+    plt.ylabel('Frequency')
+    plt.show()
+
+    return
+
+def test_6():
+
+    mapcircabove07 = []
+    with h5py.File('D:\IllustrisData\TNG100-1-Dark\postprocessing\catalog_name\stellar_circs.hdf5', 'r') as hdf5_b_file:
+        print(list(hdf5_b_file.keys()))
+        group = hdf5_b_file['Snapshot_99']
+        dataset = group['CircAbove07Frac']
+        mapcircabove07 = list(dataset)
+    hdf5_b_file.close()
+
+    plt.hist(mapcircabove07,bins=200, color='orange')
+    plt.title('Histogram of Stellar Circularities for All (sub)Halos with M⋆>3.4×10^8M⊙')
+    plt.xlabel('SubHalo_CircAbove07')
+    plt.ylabel('Frequency')
+    plt.show()
 
     return
 
@@ -344,7 +404,8 @@ if __name__ == '__main__':
     #test_structure()
     #test_4()
     #test_subhalo_gasfrac()
-    test_5()
+    #test_5()
+    #test_6()
 """
 def test_groupcat_loadHalos_all_fields():
     snap = 135
